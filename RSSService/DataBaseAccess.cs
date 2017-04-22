@@ -38,8 +38,8 @@ namespace RSSReader
 
 
         }
-
-        public static void ZapisTest(Post wpis)
+    
+        public static void ZapisTest(List<Post> wpisy)
         {
 
             string strCon = @"Data Source=localhost\\SQLEXPRESS;" + "Initial Catalog=RSSReader.Class.DataBase;Integrated Security=SSPI";
@@ -47,10 +47,13 @@ namespace RSSReader
             con.Open();
             try
             {
-                string strSql = "INSERT INTO Feeds(Date, Title, Url) VALUES (" + wpis.PublishedDate + "," + wpis.Title + ", " + wpis.link + ")";
-                SqlCommand cmd = new SqlCommand(strSql, con);
-                DataSet dset = new DataSet();
-                cmd.ExecuteNonQuery();
+                foreach (var wpis in wpisy)
+                {
+                    string strSql = "INSERT INTO Feeds(Date, Title, Url) VALUES (" + wpis.PublishedDate + "," + wpis.Title + ", " + wpis.link + ")";
+                    SqlCommand cmd = new SqlCommand(strSql, con);
+                    DataSet dset = new DataSet();
+                    cmd.ExecuteNonQuery();
+                }
                 //dset.ReadXml(cmd.ExecuteXmlReader(), XmlReadMode.Fragment);
                 // XmlDisplay.DocumentContent = dset.GetXml();
             }
@@ -70,25 +73,7 @@ namespace RSSReader
             "Initial Catalog=RSSReader.Class.DataBase;" +
             "Data Source=localhost\\SQLEXPRESS;";
 
-            //void fnGetConnection()
-            //{
-            //    try
-            //    {
-            //        // setup the database connection
-            //        con = new SqlConnection(constr);
-            //        con.Open();
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //       // MessageBox.Show("Error in connection : " + ex.Message);
-            //    }
-            //    finally
-            //    {
-            //        // dispose of open objects
-            //        if (con != null)
-            //            con.Close();
-            //    } //finally
-            //}
+           
         }
 
 
