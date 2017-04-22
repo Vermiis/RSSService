@@ -27,7 +27,7 @@ namespace RSSReader
 
             using (SqlConnection conn = new SqlConnection())
             {
-                conn.ConnectionString = "Server=localhost\\SQLEXPRESS;Database=RSSReader;Trusted_Connection=true";
+                conn.ConnectionString = "Server=localhost\\SQLEXPRESS;Database=RSSReader.Class.DataBase;Trusted_Connection=true";
 
                 string query = "INSERT INTO tabela1(kol 1, kol2, kol3) VALUES (czas, opis, url)";
 
@@ -42,7 +42,7 @@ namespace RSSReader
         public static void ZapisTest(Post wpis)
         {
 
-            string strCon = @"Data Source=SONY\MYSQLSERVER;" + "Initial Catalog=pubs;Integrated Security=SSPI";
+            string strCon = @"Data Source=localhost\\SQLEXPRESS;" + "Initial Catalog=RSSReader.Class.DataBase;Integrated Security=SSPI";
             SqlConnection con = new SqlConnection(strCon);
             con.Open();
             try
@@ -67,7 +67,7 @@ namespace RSSReader
             //setup the global SqlConnection object and constr in your class
             SqlConnection con = null;
             string constr = "Integrated Security=SSPI;" +
-            "Initial Catalog=RSSReader;" +
+            "Initial Catalog=RSSReader.Class.DataBase;" +
             "Data Source=localhost\\SQLEXPRESS;";
 
             //void fnGetConnection()
