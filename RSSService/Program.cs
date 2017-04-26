@@ -14,7 +14,7 @@ namespace RSSService
         /// </summary>
         static void Main()
         {
-            //sunc
+            //sync
             ServiceBase[] ServicesToRun;
             ServicesToRun = new ServiceBase[]
             {
