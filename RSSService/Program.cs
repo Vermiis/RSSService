@@ -9,6 +9,7 @@ namespace RSSService
 {
     static class Program
     {
+        //git shell try
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
