@@ -19,6 +19,8 @@ namespace RSSService
 
         protected override void OnStart(string[] args)
         {
+            eventLog1.WriteEntry("In OnStart");
+            RSSReader.Getter.xmel();
         }
 
         protected override void OnStop()
