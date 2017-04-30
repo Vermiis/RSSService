@@ -57,10 +57,10 @@ namespace RSSReader
         {
             var post = new Post();
             string url = "http://news.google.fr/nwshp?hl=fr&tab=wn&output=rss";
+            XmlReader reader = XmlReader.Create(url);
             var feedsList = new List<Post>();
-
-            using (XmlReader reader = XmlReader.Create(url))
-            {
+            //using (XmlReader reader = XmlReader.Create(url))
+            //{
                 SyndicationFeed feed = SyndicationFeed.Load(reader);
                 post.Title = (feed.Title.Text);
                 post.link = (feed.Links[0].Uri.ToString());
@@ -71,7 +71,7 @@ namespace RSSReader
                 }
 
 
-            }
+            //}
 
             return feedsList;
         }
