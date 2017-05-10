@@ -1,40 +1,29 @@
 ﻿using SimpleFeedReader;
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Timers;
 using System.Xml;
-using System.Xml.Linq;
-using Terradue.ServiceModel.Syndication;
-using RSSReader;
+using System.Linq;
+using System.Windows.Forms;
+using System.ServiceModel.Syndication;
+using System.Globalization;
+using System;
 
 namespace RSSReader
 {
-
-
-
-
     public class Reader
     {
+        // Pytanie, czym się różni funcja Feeds() od xmel(), mam wrażenie że obie realizują to samo zadanie.
         public static string Feeds()
-        //finalnie powinien przyjmowac tablice stringow/linkow i z nich sobie pobierac xxxx
         {
-
             var reader = new FeedReader();
-        
+            // Docelowo dane zaczytywane od użytkownika
             var items = reader.RetrieveFeed("http://www.nytimes.com/services/xml/rss/nyt/International.xml");
             string feeds = "";
             foreach (var i in items)
             {
-
                 var x = (string.Format("{0}\t{1}",
                         i.Date.ToString("g"),
                         i.Title)
-
                 );
                 feeds += x + "\n";
             }
@@ -42,65 +31,95 @@ namespace RSSReader
         }
     }
 
-    public class Post
-    {
-        public string PublishedDate;
-        public string Description;
-        public string Title;
-        public string link;
-
-    }
-
     public class Getter
     {
-        public static IEnumerable<Post> xmel()
+        public static List<Post> xmel()
         {
-            var post = new Post();
-            string url = "http://news.google.fr/nwshp?hl=fr&tab=wn&output=rss";
             var feedsList = new List<Post>();
+            List<string> UrlList = new List<string>();
+            // UrlList.Add("http://www.tvn24.pl/najnowsze.xml");
+            UrlList.Add("http://wiadomosci.wp.pl/ver,rss,rss.xml");
+            // UrlList.Add("http://www.tvn24.pl/biznes-gospodarka,6.xml");
+            UrlList.Add("http://fakty.interia.pl/feed");
 
-            using (XmlReader reader = XmlReader.Create(url))
+            foreach (var link in UrlList)
             {
+                XmlReader reader = XmlReader.Create(link);
                 SyndicationFeed feed = SyndicationFeed.Load(reader);
-                post.Title = (feed.Title.Text);
-                post.link = (feed.Links[0].Uri.ToString());
-                foreach (SyndicationItem item in feed.Items)
+                foreach (var item in feed.Items)
                 {
-                    post.Title = (item.Title.Text);
+                    Post post = new Post(DateTime.Now);
+                    post.Title = item.Title.Text;
+                    post.Description = item.Summary.Text;
+                    post.PublishedDate = item.PublishDate.DateTime;
+                    post.Link = item.Links[0].Uri.ToString();
+
                     feedsList.Add(post);
                 }
 
-
             }
-
             return feedsList;
         }
     }
 
+    #region cutter
+    //public class Cutter
+    //{
+    //    public static Post Posts(IEnumerable<FeedItem> x)
+    //    {
+    //        XmlDocument doc = new XmlDocument();
+    //        doc.Load("c:\\temp.xml");
+    //        var pos = new Post();
+    //        foreach (XmlNode node in doc.DocumentElement.ChildNodes)
+    //        {
+    //            string text = node.InnerText; //or loop through its children as well
+    //            string attr = node.Attributes["link"]?.InnerText;
+    //        }
+
+    //        return;
 
 
-    public class Refresher
+    //    }
+    //}
+    #endregion
+
+
+    public class TimerClass
     {
-        void RefreshConfTimer(int val)
+        public static System.Timers.Timer _timer;
+        public static void SetTimer()
         {
-            // Create a timer
-            var myTimer = new System.Timers.Timer();
-            // Tell the timer what to do when it elapses
-            myTimer.Elapsed += new ElapsedEventHandler(myEvent);
-            // Set it to go off every val seconds
-            myTimer.Interval = val;
-            // And start it        
-            myTimer.Enabled = true;
-            // ma pobiera� VAL z GUI i wedle wpisanej watosci wywolywac funkcje pobierajaca feed'y
+            _timer = new System.Timers.Timer(30000);
+            _timer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
+            _timer.AutoReset = true;
+            _timer.Start();
+            _timer.Enabled = true;
         }
 
-        // Implement a call with the right signature for events going off
-        private void myEvent(object source, ElapsedEventArgs e)
+        private static void OnTimedEvent(Object source, ElapsedEventArgs e)
         {
-
+            MessageBox.Show("The Elapsed event was raised at {0:HH:mm:ss.fff}" + e.SignalTime);
         }
-
     }
 
+    public class TnijXML
+    {
+        public static List<string> GetLinksFromFile(string myXmlString)
+        {
+            XmlDocument xml = new XmlDocument();
+            List<string> linki = null;
+            xml.LoadXml(myXmlString);
+
+            XmlNodeList xnList = xml.SelectNodes("/ArrayOfString");
+            foreach (XmlNode xn in xnList)
+            {
+                string link = xn["String"].InnerText;
+
+                linki.Add(link);
+            }
+            return linki;
+
+        }
+    }
 
 }
