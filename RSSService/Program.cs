@@ -29,10 +29,13 @@ namespace RSSService
             ServicesToRun = new ServiceBase[]
             {
                 new RSSService()
+
             };
             ServiceBase.Run(ServicesToRun);
    
 #endif
         }
+
+
     }
 }
